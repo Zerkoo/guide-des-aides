@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["ES5","ES2018","esnext"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "strict": false,
+  },
+  "include": ["**/*.js", "**/*.ts", "*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
