@@ -19,6 +19,8 @@ const getSubCategories = (...args) =>
  // Main funcction   
 exports.getAidesForThisProfile = async ({ profile = '', category = '', subCategory ='' }) => {
   try {
+    console.info(category);
+          console.info(profile);
     const { body: { ReponseAidesDeptParMotCle: results = []}} = await query({
       "in_profil": profile,
       "in_categorie": category,
