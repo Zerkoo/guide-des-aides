@@ -40,9 +40,11 @@ webhookServer.post('/morbihan/recherche/aides/profile', async function (req, res
 
       if (profile || category || subCategory) {
           const response = await getAidesForThisProfile({ profile, category, subCategory });
-
+          console.info(profile);
+          console.info(category);
           return successResponsev2(res, response);
       } else {
+          console.info(category);
           return failResponsev3(res, { stream: [{ text: "Je suis désolé mais pour rechercher une aide j'ai besoin que vous me précisiez au moins une catégorie ou un profil." }]});
       }
   } catch (err) {
