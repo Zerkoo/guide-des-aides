@@ -19,8 +19,9 @@ const getSubCategories = (...args) =>
  // Main funcction   
 exports.getAidesForThisProfile = async ({ profile = '', category = '', subCategory ='' }) => {
   try {
-    console.info(category);
-          console.info(profile);
+
+    // On enlève l'accent de collectivité si c'est le profile de l'utilisateur afin d'éviter des erreurs de case 
+    if ( profile == 'Collectivités territoriales') profile = 'Collectivites territoriales';
     const { body: { ReponseAidesDeptParMotCle: results = []}} = await query({
       "in_profil": profile,
       "in_categorie": category,
