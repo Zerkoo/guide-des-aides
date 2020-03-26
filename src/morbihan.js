@@ -16,6 +16,14 @@ const getSubCategories = (...args) =>
     .set("Content-Type", "application/json")
     .query(...args);
 
+const getCategories = () =>
+    superagent
+      .post(
+        "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideListeCategories&flowType=EAII&actionJSON=launch"
+      )
+      .set("Content-Type", "application/json")
+      //.query("");
+
  // Main funcction   
 exports.getAidesForThisProfile = async ({ profile = '', category = '', subCategory ='' }) => {
   try {
@@ -31,7 +39,7 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
 
     const cards = buildCards(results);
 
-    if (results.length === 0) {
+    if (results.length === 0) { 
       return { stream: [{ text: `Je n'ai pas de connaissances concernant des aides pour un profil ${profile} dans cette catégorie : ${category}`}]}
     }
     if (results.length > 5 && (category && !subCategory)) {
@@ -39,13 +47,20 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
       if (redirectionButtons.length > 0) {
         // Return propositions
         return {
-          stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des sous-catégorie suivante :"}],
+          stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des sous-catégories suivante :"}],
           posts: [...redirectionButtons]
         }
+      }
+    } if (results.length > 5 && !category) {
+      const redirectionButtons = await buttonsCateg();
+      return {
+        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des catégories suivante :"}],
+        posts: [...redirectionButtons]
       }
     }
 
     return {
+      
       stream: [{ text: "Voici ce que j'ai trouvé !" }],
       posts: [...cards]
     };
@@ -82,4 +97,22 @@ const getRedirectionButtons = async ({ profile = '', category }) => {
 
     return buttons;
   }
+};
+
+const buttonsCateg = async ({  }) => {
+
+  const result = await getCategories();
+
+    const {
+      body: { ReponseAidesListeCategories: categories = [] }
+    } = result;
+
+    const buttons = categories.map(({ libelle_categ }) => ({
+      type: "button", 
+      text: `${libelle_categ}`,
+      value: `Aide`
+    }));
+
+    return buttons;
+  
 };
