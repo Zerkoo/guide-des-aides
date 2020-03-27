@@ -16,13 +16,21 @@ const getSubCategories = (...args) =>
     .set("Content-Type", "application/json")
     .query(...args);
 
-const getCategories = () =>
+const getCategories = (...args) =>
     superagent
       .post(
         "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideListeCategories&flowType=EAII&actionJSON=launch"
       )
       .set("Content-Type", "application/json")
       //.query("");
+
+const getProfils = (...args) =>
+      superagent
+        .post(
+          "https://testa.morbihan.fr/engine54/52/PortailJSON?flowType=EAII&actionJSON=launch&flowName=RequeteAideListeProfils"
+        )
+        .set("Content-Type", "application/json")
+        //.query("");
 
  // Main funcction   
 exports.getAidesForThisProfile = async ({ profile = '', category = '', subCategory ='' }) => {
@@ -51,10 +59,17 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
           posts: [...redirectionButtons]
         }
       }
-    } if (results.length > 5 && !category) {
-      const redirectionButtons = await buttonsCateg();
+    } if (results.length > 5 && (!category && profile)) {
+      const redirectionButtons = await buttonsCateg({profile});
       return {
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des catégories suivante :"}],
+        posts: [...redirectionButtons]
+      }
+    } if (results.length > 5 && !profile && category) {
+      console.info('categ : ' , category);
+      const redirectionButtons = await buttonsProfil(category);
+      return {
+        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'un des profiles suivant :"}],
         posts: [...redirectionButtons]
       }
     }
@@ -99,7 +114,7 @@ const getRedirectionButtons = async ({ profile = '', category }) => {
   }
 };
 
-const buttonsCateg = async ({  }) => {
+const buttonsCateg = async ({ profile }) => {
 
   const result = await getCategories();
 
@@ -110,9 +125,23 @@ const buttonsCateg = async ({  }) => {
     const buttons = categories.map(({ libelle_categ }) => ({
       type: "button", 
       text: `${libelle_categ}`,
-      value: `Aide`
+      value: `Aide ${profile} domaine de ${libelle_categ}`
     }));
+    return buttons;  
+};
 
-    return buttons;
-  
+const buttonsProfil = async ({ category }) => {
+
+  const result = await getProfils();
+
+    const {
+      body: { ReponseAidesListeProfils: profils = [] }
+    } = result;
+
+    const buttons = profils.map(({ libelle_profil }) => ({
+      type: "button", 
+      text: `${libelle_profil}`,
+      value: `Aide ${libelle_profil} domaine de ${category}`
+    }));
+    return buttons;  
 };
