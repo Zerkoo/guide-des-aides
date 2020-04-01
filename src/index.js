@@ -35,18 +35,18 @@ function failResponsev3(res, { stream = [{ text: FAIL_DEFAULT_TEXT }], data = []
 // Below you can define all your webhooks
 webhookServer.post('/morbihan/recherche/aides/profile', async function (req, res) {
   try {
-      const { Profil: profile } = pathOr({}, ['body','intent','inputs'], req);
-      const { Categorie: category } = pathOr({}, ['body','intent','inputs'], req);
-      const { SousCategorie: subCategory } = pathOr({}, ['body','intent','inputs'], req);
+      const { Profil: profile, Categorie: category, SousCategorie: subCategory, MotCle: keyword } = pathOr({}, ['body','intent','inputs'], req);
 
-      if (profile || category || subCategory) {
-          const response = await getAidesForThisProfile({ profile, category, subCategory });
-          console.info(category);
-          console.info(profile);
+      if (profile || category || subCategory || keyword) {
+          console.info('rentre');
+          console.info(keyword);
+          const response = await getAidesForThisProfile({ profile, category, subCategory, keyword });
+          //console.info(category);
+          //console.info(profile);
           return successResponsev2(res, response);
       } else {
-          console.info(category);
-          console.info(profile);
+          //console.info(category);
+          //console.info(profile);
           return failResponsev3(res, { stream: [{ text: "Je suis désolé mais pour rechercher une aide j'ai besoin que vous me précisiez au moins une catégorie ou un profil." }]});
       }
   } catch (err) {

@@ -33,7 +33,7 @@ const getProfils = (...args) =>
         //.query("");
 
  // Main funcction   
-exports.getAidesForThisProfile = async ({ profile = '', category = '', subCategory ='' }) => {
+exports.getAidesForThisProfile = async ({ profile = '', category = '', subCategory ='', keyword ='' }) => {
   try {
 
     // On enlève l'accent de collectivité si c'est le profile de l'utilisateur afin d'éviter des erreurs de case 
@@ -42,10 +42,11 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
       "in_profil": profile,
       "in_categorie": category,
       "in_souscategorie": subCategory,
-      "in_mots_cles":""
+      "in_mots_cles": keyword
     });
 
     const cards = buildCards(results);
+    console.info(keyword);
 
     if (results.length === 0) { 
       return { stream: [{ text: `Je n'ai pas de connaissances concernant des aides pour un profil ${profile} dans cette catégorie : ${category}`}]}
