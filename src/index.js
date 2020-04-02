@@ -38,8 +38,10 @@ webhookServer.post('/morbihan/recherche/aides/profile', async function (req, res
       const { Profil: profile, Categorie: category, SousCategorie: subCategory, MotCle: keyword } = pathOr({}, ['body','intent','inputs'], req);
 
       if (profile || category || subCategory || keyword) {
-          console.info('rentre');
+          
           console.info(keyword);
+          console.info(profile);
+          console.info(category);
           const response = await getAidesForThisProfile({ profile, category, subCategory, keyword });
           //console.info(category);
           //console.info(profile);

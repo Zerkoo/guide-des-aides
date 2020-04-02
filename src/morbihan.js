@@ -72,6 +72,10 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
       return {
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'un des profiles suivant :"}],
         posts: [...redirectionButtons]
+      } 
+    } if (results.length > 5 && profile && category && !keyword) {
+      return {
+        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, veuillez saisir un mot clé:"}],
       }
     }
 
@@ -115,7 +119,7 @@ const getRedirectionButtons = async ({ profile = '', category }) => {
   }
 };
 
-const buttonsCateg = async ({ profile }) => {
+const buttonsCateg = async ({ profile, keyword, category }) => {
 
   const result = await getCategories();
 
