@@ -78,10 +78,19 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, veuillez saisir un mot clé:"}],
       }
     }
+    const occurance = parseInt(results.length);
+    const sing = "J'ai trouvé un résultat !";
+    const pluriel = "Voici les " + occurance  + " résultats que j'ai trouvé !";
+    const texte = "";
+    if (occurance == 1 ) {
+      texte = sing;
+    }
 
+    if (occurance > 1) {
+      texte = pluriel;
+    }
     return {
-      
-      stream: [{ text: "Voici ce que j'ai trouvé !" }],
+      stream: [{ text: texte }],
       posts: [...cards]
     };
   } catch (error) {
