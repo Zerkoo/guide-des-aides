@@ -36,6 +36,7 @@ function failResponsev3(res, { stream = [{ text: FAIL_DEFAULT_TEXT }], data = []
 webhookServer.post('/morbihan/recherche/aides/profile', async function (req, res) {
   try {
       const { Profil: profile, Categorie: category, SousCategorie: subCategory, MotCle: keyword } = pathOr({}, ['body','intent','inputs'], req);
+      
 
       if (profile || category || subCategory || keyword) {
           

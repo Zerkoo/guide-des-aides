@@ -38,6 +38,7 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
 
     // On enlève l'accent de collectivité si c'est le profile de l'utilisateur afin d'éviter des erreurs de case 
     if ( profile == 'Collectivités territoriales') profile = 'Collectivites territoriales';
+    
     const { body: { ReponseAidesDeptParMotCle: results = []}} = await query({
       "in_profil": profile,
       "in_categorie": category,
@@ -61,11 +62,13 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
         }
       }
     } if (results.length > 5 && (!category && profile)) {
+      if ( profile == "Tous" ) profile = "";
       const redirectionButtons = await buttonsCateg({profile});
       return {
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des catégories suivante :"}],
         posts: [...redirectionButtons]
       }
+      
     } if (results.length > 5 && !profile && category) {
       console.info('categ : ' , category);
       const redirectionButtons = await buttonsProfil(category);
