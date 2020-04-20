@@ -62,7 +62,6 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
         }
       }
     } if (results.length > 5 && (!category && profile)) {
-      if ( profile == "Tous" ) profile = "";
       const redirectionButtons = await buttonsCateg({profile});
       return {
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des catégories suivante :"}],
