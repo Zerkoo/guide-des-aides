@@ -1,5 +1,5 @@
 const superagent = require("superagent");
-const { normalize } = require('normalize-diacritics');
+var removeAccents = require('remove-accents');
 
 const URL_BASE = "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideParMotCle&flowType=EAII&actionJSON=launch";
 
@@ -39,13 +39,13 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
 
     
     // On enlève l'accent de collectivité si c'est le profile de l'utilisateur afin d'éviter des erreurs de case 
-    if ( profile == 'Collectivités territoriales') profile = 'Collectivites territoriales';
+   
     
     const { body: { ReponseAidesDeptParMotCle: results = []}} = await query({
-      "in_profil": profile,
-      "in_categorie": normalize(category),
-      "in_souscategorie": subCategory,
-      "in_mots_cles": keyword
+      "in_profil": removeAccents(profile),
+      "in_categorie": removeAccents(category),
+      "in_souscategorie": removeAccents(subCategory),
+      "in_mots_cles": removeAccents(keyword)
     });
 
     const cards = buildCards(results);
