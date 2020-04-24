@@ -105,10 +105,10 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
 // construction carte resultat
 const buildCards = results =>
   results.map(
-    ({ titre = "", sous_titre = "", date_limite_depot = "", resume = "" }) => ({
+    ({ titre = "", sous_titre = "", date_limite_depot = "", resume = "", chemin_pdf = "" }) => ({
       type: "card",
       title: titre,
-      text: `${sous_titre}<br/>${date_limite_depot}<br/><br/>${resume}`
+      text: `${sous_titre}<br/>${date_limite_depot}<br/><br/><a href="https://www.morbihan.fr/fileadmin${chemin_pdf}">Fiche détaillée (pdf)</a><br></br>${resume}`
     })
   );
 
