@@ -101,14 +101,16 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
     console.error("Something went wrong, here is the error : ", error);
   }
 };
-
-// construction carte resultat
+const lien_pdf = "https://www.morbihan.fr/fileadmin";
+// construction carte resultat  (str1.concat(' ', str2));
 const buildCards = results =>
   results.map(
     ({ titre = "", sous_titre = "", date_limite_depot = "", resume = "", chemin_pdf = "" }) => ({
       type: "card",
       title: titre,
-      text: `${sous_titre}<br/>${date_limite_depot}<br/><br/><a href="https://www.morbihan.fr/fileadmin${chemin_pdf}">Fiche détaillée (pdf)</a><br></br>${resume}`
+      text: `${sous_titre}<br/>${date_limite_depot}<br></br>${resume}`,
+      buttons: [{text: "Fiche détaillée (pdf)", type: "link", value: lien_pdf.concat('', chemin_pdf), "openInPanel":true}]
+      
     })
   );
 
