@@ -50,11 +50,14 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
 
     const cards = buildCards(results);
     console.info(keyword);
+    console.info(category);
+    console.info("sub : + ", subCategory);
 
+    if (category == "Solidarités, action sociale") category = "Solidarites, action sociale";
     if (results.length === 0) { 
       return { stream: [{ text: `Je n'ai pas de connaissances concernant des aides pour un profil ${profile} dans cette catégorie : ${category}`}]}
     }
-    if (results.length > 5 && (category && !subCategory)) {
+    if ( (category && !subCategory)) {
       const redirectionButtons = await getRedirectionButtons({ profile, category: category });
       if (redirectionButtons.length > 0) {
         // Return propositions
