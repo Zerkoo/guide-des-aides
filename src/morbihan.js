@@ -1,5 +1,7 @@
 const superagent = require("superagent");
 var removeAccents = require('remove-accents');
+//var unique = require('array-unique');
+import uab from 'unique-array-objects';
 
 const URL_BASE = "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideParMotCle&flowType=EAII&actionJSON=launch";
 
@@ -67,7 +69,7 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
         }
       }
     } if (results.length > 5 && (!category && profile)) {
-      const redirectionButtons = await buttonsCateg({profile});
+      const redirectionButtons = await buttonsCateg({profile, results});
       return {
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des catégories suivante :"}],
         posts: [...redirectionButtons]
@@ -137,7 +139,26 @@ const getRedirectionButtons = async ({ profile = '', category }) => {
   }
 };
 
-const buttonsCateg = async ({ profile, keyword, category }) => {
+const buttonsCateg = async ({ profile, keyword, category, results }) => {
+  console.log("result ", results['libelle_categ']);
+  const result = await getCategories();
+
+  //let uni = [...new Set(results.map(item => item.libelle_categ))];
+  //console.log(uni);
+
+    const {
+      body: { ReponseAidesListeCategories: categories = [] }
+    } = result;
+
+    const buttons = uab(results.map(({ libelle_categ }) => ({
+      type: "button", 
+      text: `${libelle_categ}`,
+      value: `Aide ${profile} domaine de ${libelle_categ}`
+    })));
+    return buttons;  
+};
+
+const buttonsCategTri = async ({ profile, keyword, category }) => {
 
   const result = await getCategories();
 
