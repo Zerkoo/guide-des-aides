@@ -59,8 +59,8 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
     if (results.length === 0) { 
       return { stream: [{ text: `Je n'ai pas de connaissances concernant des aides pour un profil ${profile} dans cette catégorie : ${category}`}]}
     }
-    if ( (category && !subCategory)) {
-      const redirectionButtons = await getRedirectionButtons({ profile, category: category });
+    if ( (category == "Solidarites, action sociale" && !subCategory)) {
+      const redirectionButtons = await getRedirectionButtons({ profile, category: category, results });
       if (redirectionButtons.length > 0) {
         // Return propositions
         return {
@@ -75,9 +75,8 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
         posts: [...redirectionButtons]
       }
       
-    } if (results.length > 5 && !profile && category) {
-      console.info('categ : ' , category);
-      const redirectionButtons = await buttonsProfil(category);
+    } if (results.length > 5 && (!profile && category)) {
+      const redirectionButtons = await buttonsProfil({category, results});
       return {
         stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'un des profiles suivant :"}],
         posts: [...redirectionButtons]
@@ -119,21 +118,21 @@ const buildCards = results =>
     })
   );
 
-const getRedirectionButtons = async ({ profile = '', category }) => {
+const getRedirectionButtons = async ({ profile = '', category, results }) => {
   if (category) {
     const result = await getSubCategories({
       in_categorie: category
     });
 
-    const {
+    /* const {
       body: { ReponseAidesListeSousCategories: subCategories = [] }
-    } = result;
+    } = result; */
 
-    const buttons = subCategories.map(({ libelle_sous_categ }) => ({
+    const buttons = uab(results.map(({ libelle_sous_categ }) => ({
       type: "button",
       text: `${libelle_sous_categ}`,
       value: `Aide ${profile} domaine de ${category}, dans la sous-catégorie : ${libelle_sous_categ}`
-    }));
+    })));
 
     return buttons;
   }
@@ -158,22 +157,18 @@ const buttonsCateg = async ({ profile, keyword, category, results }) => {
     return buttons;  
 };
 
-const buttonsCategTri = async ({ profile, keyword, category }) => {
 
-  const result = await getCategories();
+const buttonsProfil = async ({ category, results }) => {
+  console.log("result ", results);
 
-    const {
-      body: { ReponseAidesListeCategories: categories = [] }
-    } = result;
-
-    const buttons = categories.map(({ libelle_categ }) => ({
+    const buttons = uab(results.map(({ libelle_profil }) => ({
       type: "button", 
-      text: `${libelle_categ}`,
-      value: `Aide ${profile} domaine de ${libelle_categ}`
-    }));
+      text: `${libelle_profil}`,
+      value: `Aide ${libelle_profil} domaine de ${category}`
+    })));
     return buttons;  
 };
-
+/*
 const buttonsProfil = async ({ category }) => {
 
   const result = await getProfils();
@@ -188,4 +183,4 @@ const buttonsProfil = async ({ category }) => {
       value: `Aide ${libelle_profil} domaine de ${category}`
     }));
     return buttons;  
-};
+}; */ 
