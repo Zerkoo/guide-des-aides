@@ -3,7 +3,8 @@ var removeAccents = require('remove-accents');
 //var unique = require('array-unique');
 import uab from 'unique-array-objects';
 
-const URL_BASE = "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideParMotCle&flowType=EAII&actionJSON=launch";
+const URL_BASE = "http://vm-blu-dev6:8180/engine54/52/PortailJSON?flowName=RequeteAideParMotCle&flowType=EAII&actionJSON=launch";
+//const URL_BASE = "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideParMotCle&flowType=EAII&actionJSON=launch";
 
 const query = (...args) =>
   superagent
@@ -14,7 +15,8 @@ const query = (...args) =>
 const getSubCategories = (...args) =>
   superagent
     .post(
-      "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideListeSousCategories&flowType=EAII&actionJSON=launch"
+      "http://vm-blu-dev6:8180/engine54/52/PortailJSON?flowName=RequeteAideListeSousCategories&flowType=EAII&actionJSON=launch"
+      //"https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideListeSousCategories&flowType=EAII&actionJSON=launch"
     )
     .set("Content-Type", "application/json")
     .query(...args);
@@ -22,7 +24,8 @@ const getSubCategories = (...args) =>
 const getCategories = (...args) =>
     superagent
       .post(
-        "https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideListeCategories&flowType=EAII&actionJSON=launch"
+        "http://vm-blu-dev6:8180/engine54/52/PortailJSON?flowName=RequeteAideListeCategories&flowType=EAII&actionJSON=launch"
+        //"https://testa.morbihan.fr/engine54/52/PortailJSON?flowName=RequeteAideListeCategories&flowType=EAII&actionJSON=launch"
       )
       .set("Content-Type", "application/json")
       //.query("");
@@ -30,7 +33,8 @@ const getCategories = (...args) =>
 const getProfils = (...args) =>
       superagent
         .post(
-          "https://testa.morbihan.fr/engine54/52/PortailJSON?flowType=EAII&actionJSON=launch&flowName=RequeteAideListeProfils"
+          "http://vm-blu-dev6:8180/engine54/52/PortailJSON?flowType=EAII&actionJSON=launch&flowName=RequeteAideListeProfils"
+          //"https://testa.morbihan.fr/engine54/52/PortailJSON?flowType=EAII&actionJSON=launch&flowName=RequeteAideListeProfils"
         )
         .set("Content-Type", "application/json")
         //.query("");
@@ -64,21 +68,21 @@ exports.getAidesForThisProfile = async ({ profile = '', category = '', subCatego
       if (redirectionButtons.length > 0) {
         // Return propositions
         return {
-          stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des sous-catégories suivante :"}],
+          stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmi l'une des sous-catégories suivante :"}],
           posts: [...redirectionButtons]
         }
       }
     } if (results.length > 5 && (!category && profile)) {
       const redirectionButtons = await buttonsCateg({profile, results});
       return {
-        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'une des catégories suivante :"}],
+        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmi l'une des catégories suivante :"}],
         posts: [...redirectionButtons]
       }
       
     } if (results.length > 5 && (!profile && category)) {
       const redirectionButtons = await buttonsProfil({category, results});
       return {
-        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmit l'un des profiles suivant :"}],
+        stream: [{ text: "J'ai beaucoup de résultats pour votre recherche, essayez d'être plus précis, choisissez parmi l'un des profils suivants :"}],
         posts: [...redirectionButtons]
       } 
     } if (results.length > 5 && profile && category && !keyword) {
